@@ -74,7 +74,7 @@ module SeedFu
           column = @columns[k]
           next unless column
           next if [:created_at, :updated_at].include? column.name
-          if column.null && v.size == 0
+          if !v.nil? && column.null && v.size == 0
             v = nil
           end
           new_data[k] = v
