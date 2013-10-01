@@ -27,9 +27,9 @@ module SeedFu
       @options[:without_protection] ||= true
 
       @columns = {}
-      column_struct = Struct.new(:name, :null, :type)
+      column_struct = Struct.new(:name, :null, :type, :default)
       @model_class.columns.each do |column|
-        @columns[column.name.to_sym] = column_struct.new(column.name.to_sym, column.null, column.type)
+        @columns[column.name.to_sym] = column_struct.new(column.name.to_sym, column.null, column.type, column.default)
       end
 
       validate_constraints!
@@ -74,9 +74,7 @@ module SeedFu
           column = @columns[k]
           next unless column
           next if [:created_at, :updated_at].include? column.name
-          if !v.nil? && column.null && v.size == 0
-            v = nil
-          end
+          v = column.default if v.nil?
           new_data[k] = v
         end
 
